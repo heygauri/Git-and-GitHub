@@ -102,7 +102,7 @@ To pick, squash, or drop Git commits, you can use Git rebase. Run the following 
 ```
 git rebase -i master
 ```
-Insert the words Pick, Squash or Delete in front of the commits you want do the respective operation in the interactive window. Note that while squashing any commit make sure you have to have a pick commit before the squash commit.
+Insert the words 'Pick,' 'Squash,' or 'Drop' in front of the commits you want to perform the respective operation on in the interactive rebase window. Note that when squashing a commit, you should ensure that you have one 'Pick' commit before the 'Squash' commit.
 
 When you run git rebase -i master, it opens an interactive rebase window where you can choose what to do with each commit. Here's a bit more detail on each of these actions:
 
@@ -110,7 +110,7 @@ When you run git rebase -i master, it opens an interactive rebase window where y
 
 - Squash: This action allows you to combine a commit with the one before it (the one above it in the list). It merges the changes from the selected commit into the previous one, and you'll be prompted to edit the commit message.
 
-- Delete: This action removes the selected commit from the branch's history. The commit and its changes will be discarded.
+- Drop: This action removes the selected commit from the branch's history. The commit and its changes will be discarded.
 
 Here's how the interactive rebase window might look:
 ```
