@@ -5,8 +5,8 @@ Welcome to the "Git and GitHub" repository! This repository serves as a handy re
 ## Table of Contents
 
 - [Delete Git Branch](#delete-git-branch)
+- [Committing Your Changes](#committing-your-changes)
 - [Pick/Squash/Drop Git Commits](#picksquashdrop-git-commits)
-- [Editing Your Git Commits](#editing-your-git-commits)
 - [Updating Your Fork Branch](#updating-your-fork-branch)
 
 ## Delete Git Branch
@@ -23,14 +23,62 @@ To delete a Git branch remotely, use the following command:
 git push origin --delete remoteBranchName
 ```
 
-## Pick/Squash/Drop Git Commits
+## Committing Your Changes
 
-To pick, squash, or drop Git commits, you can use Git rebase. Run the following command to interactively rebase your commits:
+### Viewing your changes
+Git keeps track of changes in the working directory. Git can be told to ignore binary files (like .o or .ko files), so it won't track changes to those files. You can see which files have been modified by running:
 ```
-git rebase -i master
+git status
 ```
 
-## Editing Your Git Commits
+git can also show you a diff stat of what changed:
+```
+git diff
+```
+
+### Commit your changes
+Assuming we want to include all of our changes in one git commit, you can use git to add the changed file to the list of changes to be committed (the "staging area"):
+```
+git add <file>
+```
+
+If you run `git diff` again, you'll notice it doesn't list any changed files. That's because, by default, git diff only shows you the unstaged changes. If you run this command instead, you'll see the staged changes:
+```
+git diff --cached
+```
+That command will show you the changes to be committed.
+
+### Reverting your staged changes
+If you don't want to commit those changes, you can remove those changes from the staging area by running:
+```
+git reset <file>
+```
+
+### Committing changes
+Finally, you can commit your staged changes:
+```
+git commit -s -v
+```
+
+The -s flag will add the Signed-off-by line that is needed at the end of your patch description. The -v flag will show you the diff that you're committing.
+
+### Committing parts of files
+You can also add parts of files to the staging area by using the following flag:
+```
+git add -p
+```
+
+That will allow you to add hunks of the file to the staging area, or even edit hunks that you want to commit. This is useful, for instance, if you've made whitespace changes, and also made a camel-case variable name fix, but those changes are on the same line. You can edit the line to revert the camel-case name change, and just add the whitespace change to the staging area. Then when you commit, you will just be committing the whitespace change.
+
+### Viewing your commit
+Make sure your commit looks fine by running these commands:
+```
+git show HEAD
+```
+
+This will show the latest commit. If you want git to show a different commit, you can pass the commit ID (the long number that's shown in `git log`, or the short number that's shown in `git log --oneline`). Read the "Specifying Revisions section" of the `git rev-parse` manual page for more details on what you can in place of a commit ID.
+
+### Editing Your Git Commits
 
 Say you need to make a change to a commit you've submitted for review by creating a pull request or submitted a patch. There are several ways to do this.
 
@@ -47,6 +95,41 @@ git reset --mixed HEAD^
 ```
 
 If you want to completely get rid of all your changes, and revert all files to their state before your commit, you can use the --hard flag instead of the --mixed flag. Use this flag with care!
+
+## Pick/Squash/Drop Git Commits
+
+To pick, squash, or drop Git commits, you can use Git rebase. Run the following command to interactively rebase your commits:
+```
+git rebase -i master
+```
+Insert the words Pick, Squash or Delete in front of the commits you want do the respective operation in the interactive window. Note that while squashing any commit make sure you have to have a pick commit before the squash commit.
+
+When you run git rebase -i master, it opens an interactive rebase window where you can choose what to do with each commit. Here's a bit more detail on each of these actions:
+
+- Pick: This is the default action for each commit. It means you want to keep the commit as is.
+
+- Squash: This action allows you to combine a commit with the one before it (the one above it in the list). It merges the changes from the selected commit into the previous one, and you'll be prompted to edit the commit message.
+
+- Delete: This action removes the selected commit from the branch's history. The commit and its changes will be discarded.
+
+Here's how the interactive rebase window might look:
+```
+pick c1a1f11 Commit message 1
+pick b2b2b22 Commit message 2
+pick d3d3d33 Commit message 3
+```
+
+To squash commit b2b2b22 into commit c1a1f11, you can change it to:
+
+```
+pick c1a1f11 Commit message 1
+squash b2b2b22 Commit message 2
+pick d3d3d33 Commit message 3
+```
+
+After saving and exiting the rebase window, you'll have the opportunity to edit the commit message for the squashed commit.
+
+Interactive rebasing is a powerful feature in Git that allows you to clean up your commit history and make it more organized before merging it into a branch or repository. It's important to use it with care, especially when working on shared branches, as it can rewrite commit history and potentially cause conflicts for collaborators.
 
 ## Updating Your Fork Branch
 
